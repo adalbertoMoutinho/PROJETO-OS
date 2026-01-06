@@ -1,0 +1,52 @@
+<?php
+ini_set('display_errors',0); // IMPORTANTE
+error_reporting(E_ALL);
+
+header("Content-Type: application/json");
+
+
+
+
+
+include_once "conectar.php";
+
+// Lê JSON
+$dados = json_decode(file_get_contents("php://input"), true);
+
+if (!$dados) {
+    echo json_encode(["status" => "erro", "msg" => "JSON inválido"]);
+    exit;
+}
+
+$nome  = $dados['nomedaempresa'] ?? '';
+$email = $dados['emaildaempresa'] ?? '';
+$senha = $dados['senha'] ?? '';
+
+if ($nome === '' || $email === '' || $senha === '') {
+    echo json_encode(["status" => "erro", "msg" => "Campos obrigatórios vazios"]);
+    exit;
+}
+
+$senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+try {
+    $stmt = $con->prepare(
+        "INSERT INTO empresa (email, senha, nome)
+         VALUES (:email, :senha, :nome)"
+    );
+
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':senha', $senhaHash);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+
+    echo json_encode(["status" => "sucesso"]);
+    exit;
+
+} catch (PDOException $e) {
+    echo json_encode([
+        "status" => "erro",
+        "msg" => "Erro no banco"
+    ]);
+    exit;
+}
