@@ -52,7 +52,7 @@ include_once "../control/endereco.php";
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="ppassword" class="form-control" id="senha2" name="senha2" placeholder="Repita a senha"  minlength="5" required>
+          <input type="password" class="form-control" id="senha2" name="senha2" placeholder="Repita a senha"  minlength="5" required>
           <div class="input-group-append">
             <div class="input-group-text">
             
